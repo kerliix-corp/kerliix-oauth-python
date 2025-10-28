@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
 
+
 @dataclass
 class TokenResponse:
     access_token: str
@@ -10,6 +11,7 @@ class TokenResponse:
     scope: Optional[str] = None
     created_at: Optional[int] = None
 
+
 @dataclass
 class UserInfo:
     id: str
@@ -17,3 +19,11 @@ class UserInfo:
     name: Optional[str] = None
     picture: Optional[str] = None
     extra: Optional[Dict[str, Any]] = None
+
+
+class OAuthError(Exception):
+    """Custom OAuth error for consistent developer experience."""
+    def __init__(self, code: str, message: str):
+        super().__init__(f"{code}: {message}")
+        self.code = code
+        self.message = message

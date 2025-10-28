@@ -1,6 +1,7 @@
 import time
-from .types import TokenResponse
 from typing import Optional
+from .types import TokenResponse
+
 
 class TokenCache:
     def __init__(self):
@@ -13,9 +14,10 @@ class TokenCache:
     def get(self) -> Optional[TokenResponse]:
         if not self.token:
             return None
+
         now = int(time.time())
         expiry = (self.token.created_at or 0) + self.token.expires_in
-        if now >= expiry - 30:  # refresh 30s early
+        if now >= expiry - 30:
             return None
         return self.token
 

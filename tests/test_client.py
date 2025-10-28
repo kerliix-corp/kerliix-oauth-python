@@ -1,15 +1,22 @@
-import pytest
 from kerliix_oauth import KerliixOAuth
 
-CLIENT_ID = "demo-client"
-CLIENT_SECRET = "demo-secret"
-REDIRECT_URI = "http://localhost:5175/callback"
-BASE_URL = "http://localhost:4000"
+client = KerliixOAuth(
+    client_id="your-client-id",
+    redirect_uri="https://yourapp.com/callback",
+    base_url="https://api.kerliix.com",
+    client_secret="your-client-secret"
+)
 
-def test_auth_url():
-    client = KerliixOAuth(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, BASE_URL)
-    url = client.get_auth_url(scopes=["openid", "profile", "email"], state="test123")
-    assert "client_id=demo-client" in url
-    assert "redirect_uri=http%3A%2F%2Flocalhost%3A5175%2Fcallback" in url
-    assert "response_type=code" in url
-    print("✅ Authorization URL:", url)
+# 1️⃣ Generate Auth URL (PKCE optional)
+auth = client.get_auth_url(use_pkce=True)
+print("Visit:", auth["url"])
+
+# 2️⃣ Exchange Code
+token = client.exchange_code_for_token(code="AUTH_CODE", code_verifier=auth["code_verifier"])
+
+# 3️⃣ Fetch User Info
+user = client.get_user_info()
+print("User:", user)
+
+# 4️⃣ Revoke Token
+client.revoke_token(token.access_token)
